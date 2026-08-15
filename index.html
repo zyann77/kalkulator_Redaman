@@ -2,159 +2,167 @@
 <html lang="su">
 <head>
     <meta charset="UTF-8">
-    <!-- Meta viewport husus HP ngarah teu bisa di-zoom liar jeung pas di layar -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0a0a0a">
-    <title>Kalkulator Runtuyan ODP - PUNK HP</title>
+    <title>Kalkulator Runtuyan ODP</title>
     <style>
-        /* CSS PUNK STYLE HUSUS HP */
-        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
-
+        /* CSS BERSIH & RAPIH (CLEAN UI) */
         body {
-            background-color: #0a0a0a;
-            color: #e0e0e0;
-            font-family: 'Courier Prime', monospace;
+            background-color: #f4f6f9; /* Kelir tukang abu ngora */
+            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 10px; /* Padding dileutikan keur HP */
-            min-height: 100vh;
-            background-image: 
-                radial-gradient(#ff0055 1px, transparent 1px),
-                radial-gradient(#00ffcc 1px, transparent 1px);
-            background-size: 30px 30px; /* Pola dileutikan saeutik */
-            background-position: 0 0, 15px 15px;
+            padding: 15px;
             box-sizing: border-box;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
 
         .container {
-            background: #111;
-            border: 3px solid #ff0055;
-            box-shadow: 5px 5px 0px #00ffcc; /* Kalangkang disesuaikeun keur layar leutik */
-            padding: 20px 15px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 25px 20px;
             width: 100%;
+            max-width: 500px;
             box-sizing: border-box;
+            margin-top: 10px;
         }
 
         h1 {
-            color: #ff0055;
+            color: #0d6efd; /* Biru standar jiga di foto */
             text-align: center;
-            font-size: 20px;
-            text-shadow: 2px 2px 0px #00ffcc;
+            font-size: 22px;
             margin-top: 0;
             margin-bottom: 5px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
         }
 
         p.subtitle {
             text-align: center;
-            color: #fff;
-            font-size: 11px;
+            color: #6c757d;
+            font-size: 13px;
             margin-bottom: 25px;
-            background: #ff0055;
-            padding: 5px;
-            text-transform: uppercase;
+            margin-top: 0;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
-            color: #00ffcc;
-            font-weight: bold;
-            font-size: 13px;
+            color: #212529;
+            font-weight: 600;
+            font-size: 14px;
         }
 
-        /* Ukuran input jeung select digedéan ngarah genah ditoél ku jempol */
         input, select {
             width: 100%;
-            padding: 14px;
-            background: #000;
-            border: 2px solid #555;
-            color: #fff;
-            font-family: 'Courier Prime', monospace;
-            font-size: 16px; /* Wajib 16px ngarah iPhone (iOS) teu otomatis nge-zoom */
+            padding: 12px;
+            background: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            color: #495057;
+            font-size: 16px;
+            font-family: inherit;
             box-sizing: border-box;
-            border-radius: 0; /* Anti buleud-buleud club */
-            -webkit-appearance: none; /* Ngilangkeun gaya standar iOS/Android */
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            -webkit-appearance: none;
+        }
+
+        /* Nambahkeun panah keur dropdown select */
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px 12px;
         }
 
         input:focus, select:focus {
             outline: none;
-            border-color: #00ffcc;
-            box-shadow: 3px 3px 0px #ff0055;
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
 
         button {
             width: 100%;
-            padding: 16px;
-            background: #ff0055;
-            color: #fff;
+            padding: 14px;
+            background-color: #0d6efd;
+            color: #ffffff;
             border: none;
-            font-family: 'Courier Prime', monospace;
+            border-radius: 6px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 4px 4px 0px #00ffcc;
-            margin-top: 15px;
-            -webkit-tap-highlight-color: transparent; /* Ngilangkeun blok biru pas ditoél di HP */
+            transition: background-color 0.2s;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        button:active {
-            transform: translate(3px, 3px);
-            box-shadow: 0px 0px 0px #00ffcc;
+        button:hover {
+            background-color: #0b5ed7;
         }
 
         .btn-loop {
-            background: #00ffcc;
-            color: #000;
-            box-shadow: 4px 4px 0px #ff0055;
-            margin-top: 20px;
+            background-color: #198754; /* Héjo keur tombol kadua */
+            margin-top: 15px;
         }
         
-        .btn-loop:active {
-            box-shadow: 0px 0px 0px #ff0055;
+        .btn-loop:hover {
+            background-color: #157347;
         }
 
         .result-box {
             margin-top: 25px;
-            padding: 15px;
-            background: #000;
-            border: 2px dashed #00ffcc;
+            padding: 20px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-left: 4px solid #0d6efd;
+            border-radius: 6px;
             display: none;
         }
 
         .result-item {
-            margin: 15px 0;
-            font-size: 13px;
-            border-bottom: 1px dotted #555;
-            padding-bottom: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #dee2e6;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-item strong {
+            display: block;
+            font-size: 14px;
+            color: #212529;
         }
 
         .result-item small {
             display: block;
-            color: #aaa;
-            margin-bottom: 5px;
-            font-size: 11px;
+            color: #6c757d;
+            font-size: 12px;
+            margin-bottom: 8px;
+            margin-top: 2px;
         }
 
         .value {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 20px;
         }
 
-        .good { color: #00ffcc; }
-        .bad { color: #ff0055; }
+        .good { color: #198754; } /* Héjo */
+        .bad { color: #dc3545; } /* Beureum */
 
         .warning {
-            color: #ffcc00;
-            font-size: 10px;
-            margin-top: 15px;
-            padding-top: 10px;
-            line-height: 1.4;
+            color: #6c757d;
+            font-size: 11px;
+            margin-top: 20px;
+            text-align: center;
+            font-style: italic;
         }
     </style>
 </head>
@@ -162,11 +170,10 @@
 
     <div class="container">
         <h1>Kalkulator Runtuyan</h1>
-        <p class="subtitle">Estimator Serat Optik Garihal</p>
+        <p class="subtitle">Tools Estimasi Redaman Jaringan</p>
 
         <div class="form-group">
             <label>1. Daya Asup / OLT (dBm):</label>
-            <!-- Pake type tel ngarah keyboard hp nu kaluar angka wungkul -->
             <input type="number" id="inputPower" step="0.01" placeholder="Conto: 7.0 atawa -2.5">
         </div>
 
@@ -213,7 +220,7 @@
             </select>
         </div>
 
-        <button onclick="calculateLoss()">Itung Redamanna!</button>
+        <button onclick="calculateLoss()">Itung Redamanna</button>
 
         <div class="result-box" id="resultBox">
             <div class="result-item">
@@ -222,15 +229,15 @@
                 <span class="value good" id="passPowerResult">0 dBm</span>
             </div>
             
-            <div class="result-item" style="border-bottom: none;">
+            <div class="result-item">
                 <strong>Daya Ditampa Modem (ONT)</strong>
                 <small>Sanggeus kaluar tina box Splitter</small>
                 <span class="value" id="dropPowerResult">0 dBm</span>
             </div>
 
-            <button class="btn-loop" onclick="useTrunkAsInput()">Pake Trunk Jadi Input Anyar</button>
+            <button class="btn-loop" onclick="useTrunkAsInput()">Gunakan Trunk Sebagai Input Baru</button>
 
-            <p class="warning">*Peringetan: Ieu angka ukur kira-kira dumasar standar loss pasif. Di lapangan mah bisa beda, gumantung manéh bener teu nyambungkeun core-na!</p>
+            <p class="warning">*Ieu angka ukur estimasi dumasar standar loss pasif. Di lapangan bisa beda gumantung kualitas panyambungan.</p>
         </div>
     </div>
 
@@ -242,7 +249,7 @@
             const cableLoss = parseFloat(document.getElementById('cableLoss').value) || 0;
             
             if (isNaN(inputPower)) {
-                alert("HADEH! Asupkeun heula daya asupna nu bener, Lur!");
+                alert("Punten, asupkeun heula daya asupna (angka)!");
                 return;
             }
 
@@ -261,12 +268,11 @@
                 dropEl.className = "value bad";
             } else {
                 dropEl.innerText = dropPower.toFixed(2) + " dBm";
-                dropEl.className = "value good";
+                dropEl.className = "value good"; // Ganti jadi hideung normal mun embung héjo
             }
             
             document.getElementById('resultBox').style.display = 'block';
             
-            // Otomatis scroll ka handap ngarah katingali hasilna di HP
             setTimeout(() => {
                 document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
