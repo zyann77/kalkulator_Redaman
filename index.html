@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#050a0f">
-    <title>Kalkulator Runtuyan ODP - CYBERPUNK HUD</title>
+    <title>Kalkulator Runtuyan ODP - CYBERPUNK MATRIX</title>
     <!-- Font Koding ti Google -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
@@ -16,7 +16,7 @@
             --red: #ff003c;
             --red-glow: rgba(255, 0, 60, 0.6);
             --bg-dark: #050a0f;
-            --bg-panel: rgba(0, 20, 30, 0.8);
+            --bg-panel: rgba(0, 20, 30, 0.85); /* Rada kandel ngarah teu katinggang matrix teuing */
         }
 
         body {
@@ -26,21 +26,46 @@
             margin: 0;
             padding: 30px 15px;
             min-height: 100vh;
-            /* Grid / Jaring-jaring di tukang */
-            background-image: 
-                linear-gradient(var(--cyan-dim) 1px, transparent 1px),
-                linear-gradient(90deg, var(--cyan-dim) 1px, transparent 1px);
-            background-size: 30px 30px;
-            background-position: center top;
             box-sizing: border-box;
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Jaring-jaring (Grid) diteundeun salaku overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.15) 1px, transparent 1px);
+            background-size: 30px 30px;
+            background-position: center top;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Canvas Matrix di pangtukangna */
+        #matrixBG {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
         }
 
         .cyber-container {
             width: 100%;
             max-width: 500px;
+            z-index: 10; /* Pastikeun UI di hareup */
+            position: relative;
         }
 
         h1.sys-title {
@@ -78,9 +103,10 @@
             border: 1px solid var(--cyan-dim);
             padding: 25px 20px;
             box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+            backdrop-filter: blur(3px); /* Éfék blur saeutik nembus ka tukang */
         }
 
-        /* Aksen juru panel (Kénca luhur & Katuhu handap) */
+        /* Aksen juru panel */
         .cyber-panel::before,
         .cyber-panel::after {
             content: '';
@@ -126,7 +152,6 @@
             -webkit-appearance: none;
         }
 
-        /* Custom panah keur select box */
         select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300f3ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
@@ -143,7 +168,6 @@
             color: rgba(0, 243, 255, 0.3);
         }
 
-        /* TOMBOL UTAMA */
         button {
             width: 100%;
             padding: 16px;
@@ -159,7 +183,6 @@
             margin-top: 10px;
             transition: all 0.3s;
             -webkit-tap-highlight-color: transparent;
-            /* Éfék clip-path keur nyieun juru nyiku/potong */
             clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
         }
 
@@ -169,11 +192,10 @@
             box-shadow: 0 0 15px var(--cyan);
         }
 
-        /* TOMBOL KADUA (LOOP) */
         .btn-loop {
             background: transparent;
             border: 1px dashed var(--cyan);
-            clip-path: none; /* Tombol ieu kotak biasa ngarah beda */
+            clip-path: none; 
             margin-top: 20px;
         }
         
@@ -184,11 +206,10 @@
             border-style: solid;
         }
 
-        /* KOTAK HASIL */
         .result-box {
             margin-top: 25px;
             padding: 15px;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             border: 1px solid var(--cyan-dim);
             border-left: 3px solid var(--cyan);
             display: none;
@@ -238,6 +259,9 @@
     </style>
 </head>
 <body>
+
+    <!-- Canvas keur animasi Hacker Matrix -->
+    <canvas id="matrixBG"></canvas>
 
     <div class="cyber-container">
         <h1 class="sys-title">[SYS] KALKULATOR RUNTUYAN<span class="blink">_</span></h1>
@@ -315,6 +339,7 @@
     </div>
 
     <script>
+        // --- LOGIKA KALKULATOR REDAMAN ---
         let currentPassPower = 0; 
 
         function calculateLoss() {
@@ -356,6 +381,65 @@
             document.getElementById('resultBox').style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+
+        // --- LOGIKA ANIMASI MATRIX BACKGROUND ---
+        const canvas = document.getElementById('matrixBG');
+        const ctx = canvas.getContext('2d');
+
+        // Pastikeun ukuran canvas sagedé layar
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Karakter nu bakal ragrag (hurup katakana + latin + angka)
+        const katakana = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        // Array keur ngatur posisi turunna unggal kolom
+        const drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function drawMatrix() {
+            // Nambahkeun kalangkang hideung transparan ngarah éfék aksarana ngaleungit
+            ctx.fillStyle = 'rgba(5, 10, 15, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Warna font Cyan Cyberpunk
+            ctx.fillStyle = 'rgba(0, 243, 255, 0.35)'; // Di-set 0.35 ngarah teu ngejreng teuing
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                // Milih karakter acak
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                
+                // Ngagambar karakter di posisi kolom ka-i jeung baris ka-drops[i]
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                // Reset posisi drop ka luhur sanggeus nepi ka handap kalayan peluang acak
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                // Maju ka handap
+                drops[i]++;
+            }
+        }
+
+        // Jalankeun animasi unggal 35 milidetik
+        setInterval(drawMatrix, 35);
+
+        // Update ukuran canvas pas layar di-resize atawa diputer di HP
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
